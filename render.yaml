@@ -1,0 +1,42 @@
+services:
+  # Backend service
+  - type: web
+    name: novelistan-backend
+    env: docker
+    rootDir: backend
+    region: oregon
+    plan: starter
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: 8082
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: AZURE_STORAGE_ACCOUNT_NAME
+        sync: false
+      - key: AZURE_STORAGE_ACCOUNT_KEY
+        sync: false
+      - key: AZURE_STORAGE_CONTAINER_NAME
+        sync: false
+      - key: AZURE_STORAGE_SAS_TOKEN
+        sync: false
+
+  # Frontend service
+  - type: web
+    name: novelistan-frontend
+    env: docker
+    rootDir: novelistan
+    region: oregon
+    plan: starter
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: novelistan-backend
+          envVarKey: RENDER_EXTERNAL_URL
